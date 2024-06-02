@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>SmartDrop Dashboard</title>
+  <link rel="stylesheet" href="../../assets/vendors/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="../../assets/vendors/css/vendor.bundle.base.css">
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <link rel="shortcut icon" href="../../assets/images/favicon.ico" />
+  <style>
+    .status-block {
+        width: 100%;
+        height: 80%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+        color: white;
+        font-weight: bold;
+        text-align: center;
+        border-radius: 10px;
+        font-size: xxx-large;
+    }
+
+    .status-button-group {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+
+    .status-button {
+        flex-grow: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container-scroller">
+    <nav class="sidebar sidebar-offcanvas" id="sidebar">
+      <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
+        <a class="sidebar-brand brand-logo" href="../../index.html"><img src="../../assets/images/smartdrop-logo-full.svg"
+            alt="logo"></a>
+        <a class="sidebar-brand brand-logo-mini" href="../../index.html"><img src="../../assets/images/smartdrop-logo-mid.svg"
+            alt="logo"></a>
+      </div>
+      <ul class="nav">
+
+        <li class="nav-item nav-category">
+          <span class="nav-link">Navigation</span>
+        </li>
+        <li class="nav-item menu-items active">
+          <a class="nav-link" href="#dashboard">
+            <span class="menu-icon">
+              <i class="mdi mdi-speedometer"></i>
+            </span>
+            <span class="menu-title">Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item menu-items">
+          <a class="nav-link"
+            href="../../api/dashboard">
+            <span class="menu-icon">
+              <i class="mdi mdi-file-document-box"></i>
+            </span>
+            <span class="menu-title">Raw Data</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <div class="container-fluid page-body-wrapper">
+      <nav class="navbar p-0 fixed-top d-flex flex-row">
+        <div class="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
+          <a class="navbar-brand brand-logo-mini" href="../../index.html"><img src="../../assets/images/smartdrop-logo-mid.svg"
+              alt="logo"></a>
+        </div>
+        <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
+          <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+            <span class="mdi mdi-menu"></span>
+          </button>
+          <ul class="navbar-nav w-100">
+            <h2 class="page-title">Dashboard</h2>
+          </ul>
+          <ul class="navbar-nav navbar-nav-right">
+          </ul>
+          <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
+            data-toggle="offcanvas">
+            <span class="mdi mdi-format-line-spacing"></span>
+          </button>
+        </div>
+      </nav>
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="page-header">
+            <h3 class="page-title">SmartDrop Info</h3>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+
+                <li class="breadcrumb-item active" aria-current="page">Jonty Debel, University of Queensland</li>
+              </ol>
+            </nav>
+          </div>
+          <div class="row">
+            <div class="col-lg-6 grid-margin stretch-card">
+                <div class="card" >
+                    <div class="card-body">
+                        <h4 class="card-title">Status</h4>
+                        <div id="statusBlock" class="status-block" style="background-color: maroon;">OPEN</div>
+                        <div class="status-button-group">
+                          <button id="resetButton" class="status-button btn btn-success" onclick="sendReset()">OPEN</button>
+                          <button id="toggleStatusButton" class="status-button btn btn-danger" onclick="toggleStatus()">CLOSE</button>  
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 grid-margin stretch-card">
+                <div class="card" >
+                    <div class="card-body">
+                        <div class="chartjs-size-monitor">
+                            <div class="chartjs-size-monitor-expand">
+                                <div class=""></div>
+                            </div>
+                            <div class="chartjs-size-monitor-shrink">
+                                <div class=""></div>
+                            </div>
+                        </div>
+                        <h4 class="card-title">Time Open per Day</h4>
+                        <canvas id="timeOpenChart" class="chartjs-render-monitor"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6 grid-margin stretch-card">
+                <div class="card" >
+                    <div class="card-body">
+                        <div class="chartjs-size-monitor">
+                            <div class="chartjs-size-monitor-expand">
+                                <div class=""></div>
+                            </div>
+                            <div class="chartjs-size-monitor-shrink">
+                                <div class=""></div>
+                            </div>
+                        </div>
+                        <h4 class="card-title">Water Levels</h4>
+                        <canvas id="waterLevelsChart" class="chartjs-render-monitor"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 grid-margin stretch-card">
+                <div class="card" >
+                    <div class="card-body">
+                        <div class="chartjs-size-monitor">
+                            <div class="chartjs-size-monitor-expand">
+                                <div class=""></div>
+                            </div>
+                            <div class="chartjs-size-monitor-shrink">
+                                <div class=""></div>
+                            </div>
+                        </div>
+                        <h4 class="card-title">Current Tank Level</h4>
+                        <canvas id="currentTankLevelChart" class="chartjs-render-monitor"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="footer">
+
+        </footer>
+      </div>
+    </div>
+  </div>
+  <script src="../../assets/vendors/js/vendor.bundle.base.js"></script>
+  <script src="../../assets/vendors/chart.js/Chart.min.js"></script>
+  <script src="../../assets/js/off-canvas.js"></script>
+  <script src="../../assets/js/hoverable-collapse.js"></script>
+  <script src="../../assets/js/misc.js"></script>
+  <script src="../../assets/js/settings.js"></script>
+  <script src="../../assets/js/todolist.js"></script>
+
+  <script src="../../assets/js/chart.js"></script>
+  <script>
+    // Function to fetch data from MongoDB
+    async function fetchDataFromMongoDB() {
+      try {
+        const response = await fetch('/api/dashboard');
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        throw error;
+      }
+    }
+
+    // Function to send request to toggle lid status
+    async function sendToggleRequest(action) {
+      try {
+        const response = await fetch('/api/toggleLidStatus', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ action })
+        });
+        const data = await response.json();
+        console.log('Toggle lid status response:', data);
+      } catch (error) {
+        console.error('Error sending toggle request:', error);
+      }
+    }
+
+    // Function to toggle status
+    async function sendReset() {
+        try {
+          console.log('Sending reset')
+          // Find the status block and toggle button
+          var toggleButton = document.getElementById("resetButton");
+
+          await sendToggleRequest("reset");
+        } catch (error) {
+          console.error('Error toggling status:', error);
+        }
+    }
+
+    
+
+    async function renderTimeOpenChart() {
+      try {
+        const data = await fetchDataFromMongoDB();
+        console.log('Data is');
+        console.log(data);
+
+        // Get current month and year
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth() + 1; // Months are zero-based, so add 1
+        const currentYear = currentDate.getFullYear();
+
+        // Calculate the previous month and year
+        const previousMonth = currentMonth === 1 ? 12 : currentMonth - 1;
+        const previousYear = currentMonth === 1 ? currentYear - 1 : currentYear;
+
+        // Filter timeOpenData for the current month and the previous month
+        const timeOpenDataForLastTwoMonths = data.timeOpenData.filter(entry => {
+          const [dateString] = entry.date.split(' ');
+          const [year, month] = dateString.split('/');
+          const entryMonth = parseInt(month);
+          const entryYear = parseInt(year);
+          return (
+            (entryMonth+1 === currentMonth && entryYear === currentYear) ||
+            (entryMonth+1 === previousMonth && entryYear === previousYear)
+          );
+        });
+
+        const aggregatedData = timeOpenDataForLastTwoMonths.reduce((acc, curr) => {
+          // Splitting the date string to extract date and time
+          const [dateString, timeString] = curr.date.split(' ');
+          const [year, month, day] = dateString.split('/');
+
+          // Formatting the date as MM/DD
+          const formattedDate = `${day}/${month}`;
+
+          const hours = curr.hours / 3600; // Convert epoch time to hours
+          if (!acc[formattedDate]) {
+            acc[formattedDate] = 0;
+          }
+          acc[formattedDate] += hours;
+          return acc;
+        }, {});
+        
+        const timeOpenData = Object.keys(aggregatedData)
+        .map(date => ({
+          date,
+          hours: parseFloat(aggregatedData[date].toFixed(2))
+        })).reverse();
+
+        var ctx = document.getElementById('timeOpenChart').getContext('2d');
+        var chart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: timeOpenData.map(item => item.date),
+            datasets: [{
+              label: 'Time Open per Day (Hours)',
+              data: timeOpenData.map(item => item.hours),
+              backgroundColor: 'rgba(54, 162, 235, 0.2)',
+              borderColor: 'rgba(54, 162, 235, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true
+                }
+              }]
+            }
+          }
+        });
+      } catch (error) {
+        console.error('Error rendering time open chart:', error);
+      }
+    }
+
+
+
+    async function renderWaterLevelsChart() {
+      try {
+        const data = await fetchDataFromMongoDB();
+        console.log(data);
+
+        // Get the current month and year
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth(); // Get the current month (zero-based)
+        const currentYear = currentDate.getFullYear();
+
+        // Calculate the previous month and year
+        const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1; // If current month is January, set previous month to December
+        const previousYear = currentMonth === 0 ? currentYear - 1 : currentYear; // If current month is January, subtract 1 from the current year
+
+        // Filter data to include entries from the current month and the previous month
+        const lastTwoMonthsData = data.latestTankData.filter(item => {
+          const dateObj = new Date(item.date);
+          const itemMonth = dateObj.getMonth();
+          const itemYear = dateObj.getFullYear();
+          return (
+            (itemMonth+1 === currentMonth && itemYear === currentYear) ||
+            (itemMonth+1 === previousMonth && itemYear === previousYear)
+          );
+        });
+
+        // Extract and reverse the water levels data, trimming the date
+        const waterLevelsData = lastTwoMonthsData.map(item => {
+          // Create a new Date object from the date string
+          const dateObj = new Date(item.date);
+
+          // Extract month and day
+          const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+          const day = String(dateObj.getDate()).padStart(2, '0');
+
+          // Format the date as 'DD/MM'
+          const formattedDate = `${day}/${month}`;
+
+          return { date: formattedDate, waterLevel: item.waterLevel };
+        }).reverse(); // Reverse the array to display in chronological order
+
+        console.log(waterLevelsData);
+
+        var ctx = document.getElementById('waterLevelsChart').getContext('2d');
+        var chart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: waterLevelsData.map(item => item.date),
+            datasets: [{
+              label: 'Water Levels (L)',
+              data: waterLevelsData.map(item => item.waterLevel),
+              backgroundColor: 'rgba(54, 162, 235, 0.2)',
+              borderColor: 'rgba(54, 162, 235, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true
+                }
+              }]
+            }
+          }
+        });
+      } catch (error) {
+        console.error('Error rendering water levels chart:', error);
+      }
+    }
+
+
+
+    // Function to render the current tank level chart
+    async function renderCurrentTankLevelChart() {
+      try {
+        const data = await fetchDataFromMongoDB();
+
+        var ctx = document.getElementById('currentTankLevelChart').getContext('2d');
+        var chart = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: ['Current Tank Level (L)', 'Remaining Tank Capacity (L)'],
+            datasets: [{
+              data: [data.latestCurrentLevel.currentLevel, 7 - data.latestCurrentLevel.currentLevel],
+              backgroundColor: [
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(128, 128, 128, 0.2)',
+                
+              ],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true
+                }
+              }]
+            }
+          }
+        });
+      } catch (error) {
+        console.error('Error rendering current tank level chart:', error);
+      }
+    }
+
+    function formatTimeAgo(dateString) {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMinutes = Math.floor(diffMs / (1000 * 60));
+      const diffHours = Math.floor(diffMinutes / 60);
+
+      if (diffMinutes < 60) {
+          return diffMinutes === 1 ? "1 minute ago" : `${diffMinutes} minutes ago`;
+      } else {
+          return diffHours === 1 ? "1 hour ago" : `${diffHours} hours ago`;
+      }
+    }
+
+    // Function to toggle status
+    async function renderStatus() {
+        try {
+          // Fetch the latest data
+          const data = await fetchDataFromMongoDB();
+          
+          // Get the lidStatus from the latestLidStatusData
+          const lidStatus = data.latestLidStatus.lidStatus;
+
+          const dateString = data.latestLidStatus.timestamp;
+          const dateObj = new Date(dateString);
+
+          const year = dateObj.getFullYear();
+          console.log(formatTimeAgo(dateString));
+          // Find the status block and toggle button
+          var statusBlock = document.getElementById("statusBlock");
+          // var toggleButton = document.getElementById("toggleStatusButton");
+          console.log('Lid status is ' + lidStatus)
+          // Update UI based on the lidStatus
+          if (lidStatus === "close") {
+            statusBlock.innerHTML  = "CLOSED <br>" + formatTimeAgo(dateString);
+            statusBlock.style.backgroundColor = "maroon";
+           
+          } else if (lidStatus === "open") {
+            statusBlock.innerHTML  = "OPEN <br>" + formatTimeAgo(dateString);
+            statusBlock.style.backgroundColor = "green";
+
+          }
+        } catch (error) {
+          console.error('Error toggling status:', error);
+        }
+      }
+
+    // Call functions to render charts when DOM content is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      renderTimeOpenChart();
+      renderWaterLevelsChart();
+      renderCurrentTankLevelChart();
+      renderStatus();
+    });
+  </script>
+
+</body>
+</html>
